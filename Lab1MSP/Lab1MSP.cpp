@@ -8,9 +8,9 @@
 int MaxSubstring(char* arr)
 {
 	int max = 0;
-	int length = strlen(arr);
+	//int length = strlen(arr);
 
-	for (int i = 0; i < length; i++)
+	for (int i = 0; arr[i] != '\0';/*i < length; i++*/)
 	{
 		int currentRepeat = 1;
 		int j = i + 1;
@@ -22,6 +22,8 @@ int MaxSubstring(char* arr)
 
 		if (currentRepeat > max)
 			max = currentRepeat;
+
+		i += currentRepeat;
 	}
 
 	return max;
@@ -30,7 +32,7 @@ int MaxSubstring(char* arr)
 
 int main()
 {
-	char mas[] = "";
+	char mas[] = "Helllllllllllllllllllooooooooooooooooo";
 
 	int s = MaxSubstring(mas);
 	printf("%d", s);
