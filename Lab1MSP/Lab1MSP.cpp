@@ -2,15 +2,13 @@
 //
 
 #include "stdafx.h"
-#include "string.h"
 
 
-int MaxSubstring(char* arr)
+int MaxRepetition(char* arr, char* ch)
 {
 	int max = 0;
-	//int length = strlen(arr);
 
-	for (int i = 0; arr[i] != '\0';/*i < length; i++*/)
+	for (int i = 0; arr[i] != '\0';)
 	{
 		int currentRepeat = 1;
 		int j = i + 1;
@@ -21,7 +19,10 @@ int MaxSubstring(char* arr)
 		}
 
 		if (currentRepeat > max)
+		{
 			max = currentRepeat;
+			*ch = arr[i];
+		}
 
 		i += currentRepeat;
 	}
@@ -30,12 +31,20 @@ int MaxSubstring(char* arr)
 }
 
 
+
 int main()
 {
-	char mas[] = "Helllllllllllllllllllooooooooooooooooo";
 
-	int s = MaxSubstring(mas);
-	printf("%d", s);
+	char* arr[] = { "", "Hello", "HHeeellllooooo" };
+	char n = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		
+		printf("%d ", MaxRepetition(arr[i],&n));
+		printf("%c\n", n);
+	}
+
 
     return 0;
 }
