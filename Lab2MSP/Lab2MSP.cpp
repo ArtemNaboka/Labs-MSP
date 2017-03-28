@@ -5,7 +5,7 @@
 #include "Lab2MSP.h"
 
 #define MAX_LOADSTRING 100
-#define LINE 0
+#define LINE 2
 #define POLYGON 1
 typedef int Figure;
 
@@ -150,12 +150,30 @@ Figure figure;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static RECT rect;
+	static bool isPainted = false;
 
 
     switch (message)
     {
 	case WM_CREATE:
 		GetClientRect(hWnd, &rect);
+		break;
+	case WM_SIZE:
+	{
+		RECT newRect;
+		GetClientRect(hWnd, &newRect);
+
+		for (int i = 0; i <= counter; i++)
+		{
+			points[i].x += newRect.right - rect.right;
+			points[i].x -= newRect.left - rect.left;
+			points[i].y -= newRect.top - rect.top;
+			points[i].y += newRect.bottom - rect.bottom;
+		}
+
+		rect = newRect;
+		InvalidateRect(hWnd, &rect, true);
+	}
 		break;
     case WM_COMMAND:
         {
@@ -166,12 +184,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case IDM_LINE:
 			{
 				figure = LINE;
+				isPainted = true;
 				InvalidateRect(hWnd, &rect, true);
 			}
 				break;
 			case IDM_FIGURE: 
 			{
 				figure = POLYGON;
+				isPainted = true;
 				InvalidateRect(hWnd, &rect, true);
 			}
 			break;
@@ -179,6 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				counter = -1;
 				figure = NULL;
+				isPainted = false;
 				InvalidateRect(hWnd, &rect, true);
 			}
 			break;
@@ -209,7 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 				}
 			}
-			else
+			else if(figure == POLYGON)
 			{
 				Polygon(hdc, points, counter + 1);
 			}
@@ -219,8 +240,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_LBUTTONDOWN:
 		{
-			points[++counter].x = LOWORD(lParam);
-			points[counter].y = HIWORD(lParam);
+			if (!isPainted)
+			{
+				points[++counter].x = LOWORD(lParam);
+				points[counter].y = HIWORD(lParam);
+			}
 		}
         break;
 		case WM_DESTROY:
